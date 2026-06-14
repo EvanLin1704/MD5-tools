@@ -1,0 +1,22 @@
+<div class="drop-zone__inner">
+  <mat-icon class="drop-zone__icon" fontSet="material-symbols-rounded">
+    cloud_upload
+  </mat-icon>
+  <div class="drop-zone__text">
+    <div class="drop-zone__title">拖曳或點擊加入檔案</div>
+    @if (!compact()) {
+      <div class="drop-zone__subtitle">
+        拖曳檔案到此處，或點擊選擇檔案（可多選），會自動計算 MD5 / SHA-1 / SHA-256
+      </div>
+    }
+  </div>
+</div>
+
+<input
+  #fileInput
+  class="drop-zone__input"
+  type="file"
+  multiple
+  (click)="$event.stopPropagation()"
+  (change)="onPicked($event)"
+/>

@@ -1,0 +1,15 @@
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-list__empty {
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  border-radius: 12px;
+  border: 1px dashed
+    color-mix(in srgb, var(--mat-sys-on-surface) 18%, transparent);
+}

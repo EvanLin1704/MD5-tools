@@ -1,0 +1,72 @@
+<div class="item__header">
+  <div class="item__title">
+    <mat-icon
+      class="item__icon"
+      [class.item__icon--done]="entry().status === 'done'"
+      [class.item__icon--error]="entry().status === 'error'"
+      [class.item__icon--busy]="
+        entry().status === 'pending' || entry().status === 'hashing'
+      "
+      fontSet="material-symbols-rounded"
+    >
+      @switch (entry().status) {
+        @case ('done') { check_circle }
+        @case ('error') { error }
+        @default { hourglass_top }
+      }
+    </mat-icon>
+    <div class="item__name-wrap">
+      <div class="item__name" [matTooltip]="entry().path">
+        {{ entry().name }}
+      </div>
+      <div class="item__meta">
+        <span>{{ sizeLabel() }}</span>
+        @if (entry().status === 'done') {
+          <span>· {{ durationLabel() }}</span>
+        }
+        @if (entry().status === 'hashing') {
+          <span>· {{ progressPercent() }}%</span>
+        }
+        @if (entry().status === 'error') {
+          <span class="item__error">· {{ entry().errorMessage }}</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <button
+    mat-icon-button
+    type="button"
+    matTooltip="移除"
+    (click)="onRemove()"
+  >
+    <mat-icon fontSet="material-symbols-rounded">close</mat-icon>
+  </button>
+</div>
+
+@if (entry().status === 'pending' || entry().status === 'hashing') {
+  <mat-progress-bar
+    class="item__progress"
+    [mode]="entry().status === 'pending' ? 'indeterminate' : 'determinate'"
+    [value]="progressPercent()"
+  />
+}
+
+@if (entry().status === 'done') {
+  <div class="item__hashes">
+    @for (row of hashRows(); track row.label) {
+      <div class="item__hash-row">
+        <div class="item__hash-label">{{ row.label }}</div>
+        <code class="item__hash-value">{{ row.value }}</code>
+        <button
+          mat-icon-button
+          type="button"
+          matTooltip="複製"
+          (click)="onCopy(row.value)"
+        >
+          <mat-icon fontSet="material-symbols-rounded">content_copy</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+}

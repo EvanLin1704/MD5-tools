@@ -1,0 +1,9 @@
+@if (entries().length === 0) {
+  <div class="file-list__empty">尚未加入檔案</div>
+} @else {
+  <div class="file-list">
+    @for (entry of entries(); track entry.id) {
+      <app-file-list-item [entry]="entry" (removed)="onRemoved($event)" />
+    }
+  </div>
+}

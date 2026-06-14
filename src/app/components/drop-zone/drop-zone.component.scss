@@ -1,0 +1,94 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 2px dashed
+    color-mix(in srgb, var(--mat-sys-on-surface) 30%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--mat-sys-surface-container-low) 80%,
+    transparent
+  );
+  transition: background-color 0.18s ease, border-color 0.18s ease,
+    transform 0.18s ease;
+  cursor: copy;
+  user-select: none;
+}
+
+:host.is-dragging {
+  border-color: var(--mat-sys-primary);
+  background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+  transform: scale(1.005);
+}
+
+:host:focus-visible {
+  outline: none;
+  border-color: var(--mat-sys-primary);
+  background: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+}
+
+.drop-zone__input {
+  display: none;
+}
+
+.drop-zone__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.drop-zone__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.drop-zone__icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--mat-sys-primary);
+}
+
+.drop-zone__title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.drop-zone__subtitle {
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+/* Slim horizontal variant, used once files are already in the list. */
+:host.is-compact {
+  min-height: 0;
+  padding: 12px 20px;
+}
+
+:host.is-compact .drop-zone__inner {
+  flex-direction: row;
+  gap: 14px;
+  text-align: left;
+}
+
+:host.is-compact .drop-zone__text {
+  align-items: flex-start;
+}
+
+:host.is-compact .drop-zone__icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+:host.is-compact .drop-zone__title {
+  font-size: 15px;
+}

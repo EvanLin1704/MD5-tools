@@ -1,0 +1,46 @@
+<mat-toolbar class="app__toolbar" color="primary">
+  <mat-icon class="app__brand-icon" fontSet="material-symbols-rounded">
+    fingerprint
+  </mat-icon>
+  <span class="app__title">MD5 Tools</span>
+  <span class="app__version">v{{ version }}</span>
+  <span class="app__spacer"></span>
+
+  @if (count() > 0) {
+    <span class="app__count" matTooltip="檔案數">
+      {{ count() }} 個檔案
+    </span>
+    @if (busyCount() > 0) {
+      <span class="app__busy">
+        <mat-icon
+          class="app__busy-icon"
+          fontSet="material-symbols-rounded"
+        >
+          progress_activity
+        </mat-icon>
+        計算中 {{ busyCount() }}
+      </span>
+    }
+  }
+
+  <button
+    mat-stroked-button
+    type="button"
+    class="app__clear"
+    [disabled]="!hasEntries()"
+    (click)="onClearAll()"
+  >
+    <mat-icon fontSet="material-symbols-rounded">delete_sweep</mat-icon>
+    <span>清空</span>
+  </button>
+</mat-toolbar>
+
+<main class="app__main">
+  <app-drop-zone
+    [compact]="hasEntries()"
+    (filesDropped)="onFilesDropped($event)"
+  />
+  <section class="app__list">
+    <app-file-list />
+  </section>
+</main>

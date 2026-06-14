@@ -1,0 +1,100 @@
+{
+  "name": "md5-tools",
+  "version": "1.0.0",
+  "description": "Drag-and-drop file hash inspector (MD5 / SHA-1 / SHA-256)",
+  "author": "billy",
+  "license": "MIT",
+  "main": "dist-electron/main.js",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "icon:generate": "node scripts/generate-icon.mjs",
+    "version:generate": "node scripts/generate-version.mjs",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "prebuild:angular": "npm run version:generate",
+    "build:angular": "ng build",
+    "build": "npm run build:angular && npm run build:electron",
+    "prestart:angular": "npm run version:generate",
+    "start:angular": "ng serve --host 127.0.0.1 --port 4200",
+    "start:electron": "wait-on tcp:127.0.0.1:4200 && npm run build:electron && cross-env ELECTRON_DEV=1 electron .",
+    "start": "concurrently -k -n NG,EL -c blue,green \"npm:start:angular\" \"npm:start:electron\"",
+    "package": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "@angular/animations": "22.0.1",
+    "@angular/cdk": "22.0.1",
+    "@angular/common": "22.0.1",
+    "@angular/compiler": "22.0.1",
+    "@angular/core": "22.0.1",
+    "@angular/forms": "22.0.1",
+    "@angular/material": "22.0.1",
+    "@angular/platform-browser": "22.0.1",
+    "@angular/router": "22.0.1",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "22.0.1",
+    "@angular/cli": "22.0.1",
+    "@angular/compiler-cli": "22.0.1",
+    "@types/node": "^25.9.3",
+    "concurrently": "^10.0.3",
+    "cross-env": "^10.1.0",
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3",
+    "sharp": "^0.35.1",
+    "typescript": "6.0.3",
+    "wait-on": "^9.0.10"
+  },
+  "build": {
+    "appId": "com.billy.md5tools",
+    "productName": "MD5 Tools",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist-electron/**/*",
+      "dist/angular/browser/**/*",
+      "build/icon.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build/icon.png",
+      "category": "Utility",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.utilities",
+      "identity": null,
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
+  }
+}
