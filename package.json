@@ -2,7 +2,7 @@
   "name": "md5-tools",
   "version": "1.0.0",
   "description": "Drag-and-drop file hash inspector (MD5 / SHA-1 / SHA-256)",
-  "author": "billy",
+  "author": "Evan Lin",
   "license": "MIT",
   "main": "dist-electron/main.js",
   "private": true,
