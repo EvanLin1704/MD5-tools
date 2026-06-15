@@ -1,0 +1,75 @@
+name: release
+
+# Builds the portable (no-install) binaries for Windows, Linux and macOS and
+# attaches them to the GitHub Release that triggered the run.
+#
+# How to publish:
+#   1. Bump the "version" in package.json (the in-app version follows it).
+#   2. On GitHub: Releases -> Draft a new release -> create a tag like v1.0.0
+#      -> Publish. Publishing fires this workflow.
+#   3. When the jobs finish, the three binaries appear under that Release.
+#
+# Release assets do NOT count against the Actions artifact storage quota, and
+# only GitHub-hosted runners + first-party tooling are used, so this stays free
+# (and macOS is left unsigned, so no Apple Developer account is required).
+on:
+  release:
+    types: [published]
+
+# Allow the built-in token to upload assets to the release.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: windows
+            platform: win
+            artifact_glob: release/*.exe
+          - os: ubuntu-latest
+            name: linux
+            platform: linux
+            artifact_glob: release/*.AppImage
+          - os: macos-latest
+            name: macos
+            platform: mac
+            artifact_glob: release/*.zip
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate app icon
+        run: npm run icon:generate
+
+      - name: Build Angular + Electron
+        run: npm run build
+
+      - name: Package portable binary
+        run: npx electron-builder --${{ matrix.platform }} --publish never
+        env:
+          # No code signing: keeps macOS builds free (no Apple Developer account).
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload binaries to the Release
+        # bash is available on all GitHub-hosted runners (incl. Windows), so the
+        # glob expands consistently across platforms.
+        shell: bash
+        run: gh release upload "${{ github.event.release.tag_name }}" ${{ matrix.artifact_glob }} --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
